@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
+using dotnet_api_first.DTOs.Character;
 using dotnet_api_first.models;
 
 namespace dotnet_api_first.Services.CharacterService
@@ -13,11 +15,18 @@ namespace dotnet_api_first.Services.CharacterService
             new Character{ID = 1, Name = "Abdullah"},
         };
 
-        public async Task<ServiceRespinse<List<Character>>> AddCharacter(Character newCharacter)
+        private readonly IMapper _mapper;
+        public CharacterService(IMapper mapper)
         {
-            var serviceResponse = new ServiceRespinse<List<Character>>();
+            _mapper = mapper;
 
-            characters.Add(newCharacter);
+        }
+
+        public async Task<ServiceRespinse<List<GetCharacterDTO>>> AddCharacter(AddCharacterDTO newCharacter)
+        {
+            var serviceResponse = new ServiceRespinse<List<GetCharacterDTO>>();
+
+            characters.Add(_mapper.Map<Character>(newCharacter));
             serviceResponse.Data = characters;
             serviceResponse.Message = "Character added";
 
@@ -25,9 +34,9 @@ namespace dotnet_api_first.Services.CharacterService
 
         }
 
-        public async Task<ServiceRespinse<List<Character>>> GetCharacters()
+        public async Task<ServiceRespinse<List<GetCharacterDTO>>> GetCharacters()
         {
-            var serviceResponse = new ServiceRespinse<List<Character>>();
+            var serviceResponse = new ServiceRespinse<List<GetCharacterDTO>>();
             serviceResponse.Data = characters;
             serviceResponse.Message = "Get all characters";
 
@@ -35,12 +44,12 @@ namespace dotnet_api_first.Services.CharacterService
 
         }
 
-        public async Task<ServiceRespinse<Character>> GetSingleCharacter(int id)
+        public async Task<ServiceRespinse<GetCharacterDTO>> GetSingleCharacter(int id)
         {
-            var serviceResponse = new ServiceRespinse<Character>();
+            var serviceResponse = new ServiceRespinse<GetCharacterDTO>();
             var character = characters.FirstOrDefault(c => c.ID == id);
 
-            serviceResponse.Data = character;
+            serviceResponse.Data = _mapper.Map<GetCharacterDTO>(character);
             serviceResponse.Message = "Get Single character";
 
             if (serviceResponse.Data is not null)
@@ -51,5 +60,7 @@ namespace dotnet_api_first.Services.CharacterService
 
             throw new Exception("Character not found");
         }
+
+
     }
 }
