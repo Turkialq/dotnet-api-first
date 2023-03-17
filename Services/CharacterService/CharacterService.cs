@@ -26,8 +26,11 @@ namespace dotnet_api_first.Services.CharacterService
         {
             var serviceResponse = new ServiceRespinse<List<GetCharacterDTO>>();
 
-            characters.Add(_mapper.Map<Character>(newCharacter));
-            serviceResponse.Data = characters;
+            var character = _mapper.Map<Character>(newCharacter);
+            character.ID = characters.Max(c => c.ID) + 1;
+            characters.Add(character);
+
+            serviceResponse.Data = characters.Select(c => _mapper.Map<GetCharacterDTO>(c)).ToList();
             serviceResponse.Message = "Character added";
 
             return serviceResponse;
@@ -37,7 +40,7 @@ namespace dotnet_api_first.Services.CharacterService
         public async Task<ServiceRespinse<List<GetCharacterDTO>>> GetCharacters()
         {
             var serviceResponse = new ServiceRespinse<List<GetCharacterDTO>>();
-            serviceResponse.Data = characters;
+            serviceResponse.Data = characters.Select(c => _mapper.Map<GetCharacterDTO>(c)).ToList();
             serviceResponse.Message = "Get all characters";
 
             return serviceResponse;
@@ -61,6 +64,33 @@ namespace dotnet_api_first.Services.CharacterService
             throw new Exception("Character not found");
         }
 
+        public async Task<ServiceRespinse<GetCharacterDTO>> UpdateCharacter(UpdateCharacterDTO newCharacter)
+        {
+            var serviceResponse = new ServiceRespinse<GetCharacterDTO>();
+            var updatedCharacter = characters.FirstOrDefault(c => c.ID == newCharacter.ID);
 
+            try
+            {
+                if (updatedCharacter is null)
+                {
+                    throw new Exception($"Character with ID : '{newCharacter.ID}' not found");
+                }
+
+                updatedCharacter.Agility = newCharacter.Agility;
+                updatedCharacter.Name = newCharacter.Name;
+                updatedCharacter.HitPoints = newCharacter.HitPoints;
+
+
+                serviceResponse.Data = _mapper.Map<GetCharacterDTO>(updatedCharacter);
+                serviceResponse.Message = "Update Single character";
+            }
+            catch (Exception e)
+            {
+                serviceResponse.Success = false;
+                serviceResponse.Message = e.Message;
+            }
+
+            return serviceResponse;
+        }
     }
 }

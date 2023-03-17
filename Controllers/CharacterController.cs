@@ -40,5 +40,19 @@ namespace dotnet_api_first.Controllers
             return Ok(await _characterService.AddCharacter(newChar));
         }
 
+        [HttpPut]
+        public async Task<ActionResult<ServiceRespinse<List<GetCharacterDTO>>>> UpdateCharacter(UpdateCharacterDTO newChar)
+        {
+            var response = await _characterService.UpdateCharacter(newChar);
+            if (response.Data is null)
+            {
+                return NotFound(response);
+            }
+
+            return Ok(response);
+        }
+
+
+
     }
 }

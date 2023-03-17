@@ -31,3 +31,5 @@
 /Users/turkialqahtani/Desktop/WebDev/dotnet-api-first/obj/Debug/net7.0/dotnet-api-first.pdb
 /Users/turkialqahtani/Desktop/WebDev/dotnet-api-first/obj/Debug/net7.0/dotnet-api-first.genruntimeconfig.cache
 /Users/turkialqahtani/Desktop/WebDev/dotnet-api-first/obj/Debug/net7.0/ref/dotnet-api-first.dll
+/Users/turkialqahtani/Desktop/WebDev/dotnet-api-first/bin/Debug/net7.0/AutoMapper.dll
+/Users/turkialqahtani/Desktop/WebDev/dotnet-api-first/bin/Debug/net7.0/AutoMapper.Extensions.Microsoft.DependencyInjection.dll
