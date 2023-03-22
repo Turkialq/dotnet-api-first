@@ -52,7 +52,22 @@ namespace dotnet_api_first.Controllers
             return Ok(response);
         }
 
+        [HttpDelete("character/{id}")]
 
+        public async Task<ActionResult<ServiceRespinse<List<GetCharacterDTO>>>> DeleteCharacter(int id)
+        {
+            var response = await _characterService.DeleteCharacter(id);
+            if (response.Data is null)
+            {
+                return NotFound(response);
+            }
+
+            return Ok(response);
+        }
 
     }
+
+
+
+
 }

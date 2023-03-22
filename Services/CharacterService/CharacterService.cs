@@ -92,5 +92,30 @@ namespace dotnet_api_first.Services.CharacterService
 
             return serviceResponse;
         }
+
+        public async Task<ServiceRespinse<GetCharacterDTO>> DeleteCharacter(int id)
+        {
+            var serviceResponse = new ServiceRespinse<GetCharacterDTO>();
+
+            // get the index of the object
+            // then delete it
+
+            int indexOfDeletedItem = characters.FindIndex(c => c.ID == id);
+
+            if (indexOfDeletedItem >= 0)
+            {
+                characters.RemoveAt(indexOfDeletedItem);
+                serviceResponse.Data = _mapper.Map<GetCharacterDTO>(characters[indexOfDeletedItem]);
+                serviceResponse.Message = "deleted Single character";
+
+                return serviceResponse;
+
+            }
+            else
+            {
+                throw new Exception($"Character With ID :'{id}' not found");
+            }
+
+        }
     }
 }
