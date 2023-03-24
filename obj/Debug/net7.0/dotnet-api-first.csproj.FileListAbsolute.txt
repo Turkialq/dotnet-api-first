@@ -33,3 +33,17 @@
 /Users/turkialqahtani/Desktop/WebDev/dotnet-api-first/obj/Debug/net7.0/ref/dotnet-api-first.dll
 /Users/turkialqahtani/Desktop/WebDev/dotnet-api-first/bin/Debug/net7.0/AutoMapper.dll
 /Users/turkialqahtani/Desktop/WebDev/dotnet-api-first/bin/Debug/net7.0/AutoMapper.Extensions.Microsoft.DependencyInjection.dll
+/Users/turkialqahtani/Desktop/WebDev/dotnet-api-first/bin/Debug/net7.0/Microsoft.EntityFrameworkCore.dll
+/Users/turkialqahtani/Desktop/WebDev/dotnet-api-first/bin/Debug/net7.0/Microsoft.EntityFrameworkCore.Abstractions.dll
+/Users/turkialqahtani/Desktop/WebDev/dotnet-api-first/bin/Debug/net7.0/Microsoft.EntityFrameworkCore.Relational.dll
+/Users/turkialqahtani/Desktop/WebDev/dotnet-api-first/bin/Debug/net7.0/Microsoft.Extensions.Caching.Abstractions.dll
+/Users/turkialqahtani/Desktop/WebDev/dotnet-api-first/bin/Debug/net7.0/Microsoft.Extensions.Caching.Memory.dll
+/Users/turkialqahtani/Desktop/WebDev/dotnet-api-first/bin/Debug/net7.0/Microsoft.Extensions.Configuration.Abstractions.dll
+/Users/turkialqahtani/Desktop/WebDev/dotnet-api-first/bin/Debug/net7.0/Microsoft.Extensions.DependencyInjection.dll
+/Users/turkialqahtani/Desktop/WebDev/dotnet-api-first/bin/Debug/net7.0/Microsoft.Extensions.DependencyInjection.Abstractions.dll
+/Users/turkialqahtani/Desktop/WebDev/dotnet-api-first/bin/Debug/net7.0/Microsoft.Extensions.Logging.dll
+/Users/turkialqahtani/Desktop/WebDev/dotnet-api-first/bin/Debug/net7.0/Microsoft.Extensions.Logging.Abstractions.dll
+/Users/turkialqahtani/Desktop/WebDev/dotnet-api-first/bin/Debug/net7.0/Microsoft.Extensions.Options.dll
+/Users/turkialqahtani/Desktop/WebDev/dotnet-api-first/bin/Debug/net7.0/Microsoft.Extensions.Primitives.dll
+/Users/turkialqahtani/Desktop/WebDev/dotnet-api-first/bin/Debug/net7.0/Npgsql.dll
+/Users/turkialqahtani/Desktop/WebDev/dotnet-api-first/bin/Debug/net7.0/Npgsql.EntityFrameworkCore.PostgreSQL.dll
