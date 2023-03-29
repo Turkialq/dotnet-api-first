@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
+using dotnet_api_first.Data;
 using dotnet_api_first.DTOs.Character;
 using dotnet_api_first.models;
 
@@ -16,9 +17,11 @@ namespace dotnet_api_first.Services.CharacterService
         };
 
         private readonly IMapper _mapper;
-        public CharacterService(IMapper mapper)
+        private readonly DataContex _context;
+        public CharacterService(IMapper mapper, DataContex context)
         {
             _mapper = mapper;
+            _context = context;
 
         }
 
@@ -28,6 +31,10 @@ namespace dotnet_api_first.Services.CharacterService
 
             var character = _mapper.Map<Character>(newCharacter);
             character.ID = characters.Max(c => c.ID) + 1;
+
+            _context.Add(character);
+            await _context.SaveChangesAsync();
+
             characters.Add(character);
 
             serviceResponse.Data = characters.Select(c => _mapper.Map<GetCharacterDTO>(c)).ToList();

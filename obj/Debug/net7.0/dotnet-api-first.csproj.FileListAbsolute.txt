@@ -47,3 +47,8 @@
 /Users/turkialqahtani/Desktop/WebDev/dotnet-api-first/bin/Debug/net7.0/Microsoft.Extensions.Primitives.dll
 /Users/turkialqahtani/Desktop/WebDev/dotnet-api-first/bin/Debug/net7.0/Npgsql.dll
 /Users/turkialqahtani/Desktop/WebDev/dotnet-api-first/bin/Debug/net7.0/Npgsql.EntityFrameworkCore.PostgreSQL.dll
+/Users/turkialqahtani/Desktop/WebDev/dotnet-api-first/bin/Debug/net7.0/Humanizer.dll
+/Users/turkialqahtani/Desktop/WebDev/dotnet-api-first/bin/Debug/net7.0/Microsoft.EntityFrameworkCore.Design.dll
+/Users/turkialqahtani/Desktop/WebDev/dotnet-api-first/bin/Debug/net7.0/Microsoft.Extensions.DependencyModel.dll
+/Users/turkialqahtani/Desktop/WebDev/dotnet-api-first/bin/Debug/net7.0/Mono.TextTemplating.dll
+/Users/turkialqahtani/Desktop/WebDev/dotnet-api-first/bin/Debug/net7.0/System.CodeDom.dll
