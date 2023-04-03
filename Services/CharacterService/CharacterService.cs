@@ -6,16 +6,12 @@ using AutoMapper;
 using dotnet_api_first.Data;
 using dotnet_api_first.DTOs.Character;
 using dotnet_api_first.models;
+using Microsoft.EntityFrameworkCore;
 
 namespace dotnet_api_first.Services.CharacterService
 {
     public class CharacterService : ICharacterService
     {
-        private static List<Character> characters = new List<Character> {
-            new Character(),
-            new Character{ID = 1, Name = "Abdullah"},
-        };
-
         private readonly IMapper _mapper;
         private readonly DataContex _context;
         public CharacterService(IMapper mapper, DataContex context)
@@ -30,14 +26,13 @@ namespace dotnet_api_first.Services.CharacterService
             var serviceResponse = new ServiceRespinse<List<GetCharacterDTO>>();
 
             var character = _mapper.Map<Character>(newCharacter);
-            character.ID = characters.Max(c => c.ID) + 1;
 
-            _context.Add(character);
+            await _context.characters.AddAsync(character);
             await _context.SaveChangesAsync();
 
-            characters.Add(character);
+            // characters.Add(character);
 
-            serviceResponse.Data = characters.Select(c => _mapper.Map<GetCharacterDTO>(c)).ToList();
+            serviceResponse.Data = await _context.characters.Select(c => _mapper.Map<GetCharacterDTO>(c)).ToListAsync();
             serviceResponse.Message = "Character added";
 
             return serviceResponse;
@@ -47,7 +42,8 @@ namespace dotnet_api_first.Services.CharacterService
         public async Task<ServiceRespinse<List<GetCharacterDTO>>> GetCharacters()
         {
             var serviceResponse = new ServiceRespinse<List<GetCharacterDTO>>();
-            serviceResponse.Data = characters.Select(c => _mapper.Map<GetCharacterDTO>(c)).ToList();
+            var dbCharacters = await _context.characters.ToListAsync();
+            serviceResponse.Data = dbCharacters.Select(c => _mapper.Map<GetCharacterDTO>(c)).ToList();
             serviceResponse.Message = "Get all characters";
 
             return serviceResponse;
@@ -57,7 +53,7 @@ namespace dotnet_api_first.Services.CharacterService
         public async Task<ServiceRespinse<GetCharacterDTO>> GetSingleCharacter(int id)
         {
             var serviceResponse = new ServiceRespinse<GetCharacterDTO>();
-            var character = characters.FirstOrDefault(c => c.ID == id);
+            var character = await _context.characters.FirstOrDefaultAsync(c => c.ID == id);
 
             serviceResponse.Data = _mapper.Map<GetCharacterDTO>(character);
             serviceResponse.Message = "Get Single character";
@@ -74,7 +70,7 @@ namespace dotnet_api_first.Services.CharacterService
         public async Task<ServiceRespinse<GetCharacterDTO>> UpdateCharacter(UpdateCharacterDTO newCharacter)
         {
             var serviceResponse = new ServiceRespinse<GetCharacterDTO>();
-            var updatedCharacter = characters.FirstOrDefault(c => c.ID == newCharacter.ID);
+            var updatedCharacter = await _context.characters.FirstAsync(c => c.ID == newCharacter.ID);
 
             try
             {
@@ -86,6 +82,8 @@ namespace dotnet_api_first.Services.CharacterService
                 updatedCharacter.Agility = newCharacter.Agility;
                 updatedCharacter.Name = newCharacter.Name;
                 updatedCharacter.HitPoints = newCharacter.HitPoints;
+
+                await _context.SaveChangesAsync();
 
 
                 serviceResponse.Data = _mapper.Map<GetCharacterDTO>(updatedCharacter);
@@ -100,19 +98,18 @@ namespace dotnet_api_first.Services.CharacterService
             return serviceResponse;
         }
 
-        public async Task<ServiceRespinse<GetCharacterDTO>> DeleteCharacter(int id)
+        public async Task<ServiceRespinse<List<GetCharacterDTO>>> DeleteCharacter(int id)
         {
-            var serviceResponse = new ServiceRespinse<GetCharacterDTO>();
+            var serviceResponse = new ServiceRespinse<List<GetCharacterDTO>>();
 
-            // get the index of the object
-            // then delete it
+            var character = await _context.characters.FirstAsync(c => c.ID == id);
 
-            int indexOfDeletedItem = characters.FindIndex(c => c.ID == id);
-
-            if (indexOfDeletedItem >= 0)
+            if (character is not null)
             {
-                characters.RemoveAt(indexOfDeletedItem);
-                serviceResponse.Data = _mapper.Map<GetCharacterDTO>(characters[indexOfDeletedItem]);
+                var result = id;
+                _context.characters.Remove(character);
+                await _context.SaveChangesAsync();
+                serviceResponse.Data = await _context.characters.Select(c => _mapper.Map<GetCharacterDTO>(c)).ToListAsync();
                 serviceResponse.Message = "deleted Single character";
 
                 return serviceResponse;
@@ -124,5 +121,7 @@ namespace dotnet_api_first.Services.CharacterService
             }
 
         }
+
+
     }
 }

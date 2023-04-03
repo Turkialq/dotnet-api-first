@@ -13,7 +13,7 @@ namespace dotnet_api_first.Services.CharacterService
         Task<ServiceRespinse<GetCharacterDTO>> GetSingleCharacter(int id);
         Task<ServiceRespinse<List<GetCharacterDTO>>> AddCharacter(AddCharacterDTO newCharacter);
         Task<ServiceRespinse<GetCharacterDTO>> UpdateCharacter(UpdateCharacterDTO newCharacter);
-        Task<ServiceRespinse<GetCharacterDTO>> DeleteCharacter(int id);
+        Task<ServiceRespinse<List<GetCharacterDTO>>> DeleteCharacter(int id);
 
 
     }
