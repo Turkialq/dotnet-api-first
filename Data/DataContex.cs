@@ -9,7 +9,8 @@ namespace dotnet_api_first.Data
         {
 
         }
-        public DbSet<Character> characters { get; set; } // create a new table
+        public DbSet<Character> characters { get; set; }
+        public DbSet<User> users { get; set; }
 
     }
 }
