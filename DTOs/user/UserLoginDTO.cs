@@ -5,9 +5,8 @@ using System.Threading.Tasks;
 
 namespace dotnet_api_first.DTOs.user
 {
-    public class UserDTO
+    public class UserLoginDTO
     {
-
         public string userName { get; set; } = string.Empty;
         public string password { get; set; } = string.Empty;
 

@@ -43,6 +43,19 @@ namespace dotnet_api_first.Controllers
             return Ok(response);
 
         }
+
+        [HttpPost("login")]
+        public async Task<ActionResult<ServiceRespinse<int>>> Login(UserLoginDTO user)
+        {
+            var response = await _authRepo.Login(user.userName, user.password);
+
+            if (!response.Success)
+            {
+                return BadRequest(response);
+            }
+            return Ok(response);
+
+        }
     }
 
 }

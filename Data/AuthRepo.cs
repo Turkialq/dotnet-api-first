@@ -19,9 +19,37 @@ namespace dotnet_api_first.Data
             _mapper = mapper;
 
         }
-        public Task<ServiceRespinse<int>> Login(string userName, string password)
+        public async Task<ServiceRespinse<int>> Login(string userName, string password)
         {
-            throw new NotImplementedException();
+            var serviceResponse = new ServiceRespinse<int>();
+            try
+            {
+                var user = await _context.users
+                .FirstOrDefaultAsync(u => u.userName.ToLower().Equals(userName.ToLower()));
+
+                if (user is null)
+                {
+                    serviceResponse.Success = false;
+                    serviceResponse.Message = "User does not exsits";
+                }
+                else if (!VerifiyPasswordHash(password, user.password, user.passwordSalt))
+                {
+                    serviceResponse.Success = false;
+                    serviceResponse.Message = "Wrong password";
+
+                }
+                else
+                {
+                    serviceResponse.Data = user.id;
+                }
+                return serviceResponse;
+
+            }
+            catch (System.Exception)
+            {
+
+                throw new Exception("Error happened in Login");
+            }
         }
 
         public async Task<ServiceRespinse<int>> Register(User user, string password)
@@ -84,6 +112,16 @@ namespace dotnet_api_first.Data
 
             }
 
+        }
+
+        private bool VerifiyPasswordHash(string password, byte[] passwordHash, byte[] passwordSalt)
+        {
+            using (var hmac = new System.Security.Cryptography.HMACSHA512(passwordSalt))
+            {
+                var computeHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
+                return computeHash.SequenceEqual(passwordHash);
+
+            }
         }
     }
 
