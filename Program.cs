@@ -12,6 +12,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddAutoMapper(typeof(Program).Assembly);
 builder.Services.AddScoped<ICharacterService, CharacterService>();
+builder.Services.AddScoped<IAuthRepo, AuthRepo>();
 builder.Services.AddDbContext<DataContex>(options => options.UseNpgsql(builder.Configuration.GetConnectionString("DbContext")));
 
 var app = builder.Build();

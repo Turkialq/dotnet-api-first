@@ -30,15 +30,25 @@ namespace dotnet_api_first.Data
             var Newuser = _mapper.Map<User>(user);
             try
             {
-                createPasswordHash(password, out byte[] passwordHash, out byte[] passwordSalt);
+                if (await UserExists(user.userName))
+                {
+                    serviceResponse.Success = false;
+                    serviceResponse.Message = "User already exists";
+                    return serviceResponse;
 
-                user.password = passwordHash;
-                user.passwordSalt = passwordSalt;
+                }
+                else
+                {
+                    createPasswordHash(password, out byte[] passwordHash, out byte[] passwordSalt);
 
-                await _context.users.AddAsync(user);
-                await _context.SaveChangesAsync();
-                serviceResponse.Data = user.id;
-                return serviceResponse;
+                    user.password = passwordHash;
+                    user.passwordSalt = passwordSalt;
+
+                    await _context.users.AddAsync(user);
+                    await _context.SaveChangesAsync();
+                    serviceResponse.Data = user.id;
+                    return serviceResponse;
+                }
             }
             catch (System.Exception)
             {
@@ -46,9 +56,24 @@ namespace dotnet_api_first.Data
             }
         }
 
-        public Task<bool> UserExists(string userName)
+        public async Task<bool> UserExists(string userName)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var user = await _context.users.AnyAsync(u => u.userName.ToLower() == userName.ToLower());
+
+                if (user)
+                {
+                    return true;
+                }
+                return false;
+
+            }
+            catch (System.Exception)
+            {
+
+                throw new Exception("something went wrong with user exists function");
+            }
         }
         private void createPasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt)
         {
