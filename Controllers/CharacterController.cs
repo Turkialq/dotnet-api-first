@@ -1,15 +1,12 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using dotnet_api_first.models;
 using dotnet_api_first.Services.CharacterService;
 using Microsoft.AspNetCore.Mvc;
 using dotnet_api_first.DTOs.Character;
-
+using Microsoft.AspNetCore.Authorization;
 
 namespace dotnet_api_first.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("api/[controller]")]
     public class CharacterController : ControllerBase

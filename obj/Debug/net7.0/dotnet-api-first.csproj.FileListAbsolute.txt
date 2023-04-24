@@ -57,3 +57,9 @@
 /Users/turkialqahtani/Desktop/WebDev/dotnet-api-first/bin/Debug/net7.0/Microsoft.IdentityModel.Tokens.dll
 /Users/turkialqahtani/Desktop/WebDev/dotnet-api-first/bin/Debug/net7.0/Microsoft.IdentityModel.JsonWebTokens.dll
 /Users/turkialqahtani/Desktop/WebDev/dotnet-api-first/bin/Debug/net7.0/System.IdentityModel.Tokens.Jwt.dll
+/Users/turkialqahtani/Desktop/WebDev/dotnet-api-first/bin/Debug/net7.0/Microsoft.AspNetCore.Authentication.JwtBearer.dll
+/Users/turkialqahtani/Desktop/WebDev/dotnet-api-first/bin/Debug/net7.0/Microsoft.IdentityModel.Protocols.dll
+/Users/turkialqahtani/Desktop/WebDev/dotnet-api-first/bin/Debug/net7.0/Microsoft.IdentityModel.Protocols.OpenIdConnect.dll
+/Users/turkialqahtani/Desktop/WebDev/dotnet-api-first/bin/Debug/net7.0/Scrutor.dll
+/Users/turkialqahtani/Desktop/WebDev/dotnet-api-first/bin/Debug/net7.0/Swashbuckle.AspNetCore.Filters.dll
+/Users/turkialqahtani/Desktop/WebDev/dotnet-api-first/bin/Debug/net7.0/Swashbuckle.AspNetCore.Filters.Abstractions.dll
