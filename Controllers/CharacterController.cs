@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using dotnet_api_first.models;
 using dotnet_api_first.Services.CharacterService;
 using Microsoft.AspNetCore.Mvc;
@@ -22,7 +23,9 @@ namespace dotnet_api_first.Controllers
         [HttpGet("characters")]
         public async Task<ActionResult<ServiceRespinse<List<GetCharacterDTO>>>> GetListOfCharacters()
         {
-            return Ok(await _characterService.GetCharacters());
+            // get the id of the user
+            int userID = int.Parse(User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)!.Value);
+            return Ok(await _characterService.GetCharacters(userID));
         }
 
         [HttpGet("character/{id}")]

@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using AutoMapper;
 using dotnet_api_first.Data;
 using dotnet_api_first.DTOs.Character;
@@ -39,10 +35,10 @@ namespace dotnet_api_first.Services.CharacterService
 
         }
 
-        public async Task<ServiceRespinse<List<GetCharacterDTO>>> GetCharacters()
+        public async Task<ServiceRespinse<List<GetCharacterDTO>>> GetCharacters(int userID)
         {
             var serviceResponse = new ServiceRespinse<List<GetCharacterDTO>>();
-            var dbCharacters = await _context.characters.ToListAsync();
+            var dbCharacters = await _context.characters.Where(c => c.user!.id == userID).ToListAsync();
             serviceResponse.Data = dbCharacters.Select(c => _mapper.Map<GetCharacterDTO>(c)).ToList();
             serviceResponse.Message = "Get all characters";
 

@@ -1,6 +1,7 @@
 using dotnet_api_first.Data;
 using dotnet_api_first.Services.CharacterService;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -27,6 +28,17 @@ builder.Services.AddSwaggerGen(c =>
 builder.Services.AddAutoMapper(typeof(Program).Assembly);
 builder.Services.AddScoped<ICharacterService, CharacterService>();
 builder.Services.AddScoped<IAuthRepo, AuthRepo>();
+builder.Services.AddRateLimiter(options =>
+{
+    options.AddFixedWindowLimiter("FixedWindowPolicy", opt =>
+    {
+        opt.Window = TimeSpan.FromSeconds(2);
+        opt.PermitLimit = 10;
+        opt.QueueLimit = 15;
+        opt.QueueProcessingOrder = System.Threading.RateLimiting.QueueProcessingOrder.OldestFirst;
+
+    });
+});
 builder.Services.AddDbContext<DataContex>(options => options.UseNpgsql(builder.Configuration.GetConnectionString("DbContext")));
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 .AddJwtBearer(options =>
@@ -49,6 +61,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseRateLimiter();
 
 app.UseHttpsRedirection();
 
