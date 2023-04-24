@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -5,6 +6,8 @@ using System.Threading.Tasks;
 using AutoMapper;
 using dotnet_api_first.models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
 namespace dotnet_api_first.Data
 {
     public class AuthRepo : IAuthRepo
@@ -12,16 +15,18 @@ namespace dotnet_api_first.Data
     {
         private readonly DataContex _context;
         private readonly IMapper _mapper;
+        private readonly IConfiguration _configuration;
 
-        public AuthRepo(DataContex context, IMapper mapper)
+        public AuthRepo(DataContex context, IMapper mapper, IConfiguration configuration)
         {
             _context = context;
             _mapper = mapper;
+            _configuration = configuration;
 
         }
-        public async Task<ServiceRespinse<int>> Login(string userName, string password)
+        public async Task<ServiceRespinse<string>> Login(string userName, string password)
         {
-            var serviceResponse = new ServiceRespinse<int>();
+            var serviceResponse = new ServiceRespinse<string>();
             try
             {
                 var user = await _context.users
@@ -40,7 +45,7 @@ namespace dotnet_api_first.Data
                 }
                 else
                 {
-                    serviceResponse.Data = user.id;
+                    serviceResponse.Data = CreateToken(user);
                 }
                 return serviceResponse;
 
@@ -122,6 +127,35 @@ namespace dotnet_api_first.Data
                 return computeHash.SequenceEqual(passwordHash);
 
             }
+        }
+
+        private string CreateToken(User user)
+        {
+            var claims = new List<Claim>
+            {
+                new Claim(ClaimTypes.NameIdentifier, user.id.ToString()),
+                new Claim(ClaimTypes.Name, user.userName)
+            };
+
+            var appSettingsToken = _configuration.GetSection("AppSettings:Token").Value;
+
+            if (appSettingsToken is null) throw new Exception("No secret key");
+
+            SymmetricSecurityKey key = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(appSettingsToken));
+            SigningCredentials creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
+
+            var tokenDescriptor = new SecurityTokenDescriptor
+            {
+                Subject = new ClaimsIdentity(claims),
+                Expires = DateTime.Now.AddDays(1),
+                SigningCredentials = creds
+            };
+
+            JwtSecurityTokenHandler tokenHandler = new JwtSecurityTokenHandler();
+            SecurityToken token = tokenHandler.CreateToken(tokenDescriptor);
+
+            return tokenHandler.WriteToken(token);
+
         }
     }
 
