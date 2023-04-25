@@ -23,3 +23,8 @@ services:
       PGADMIN_DEFAULT_PASSWORD: admin
     
     restart: unless-stopped
+  redis:
+    image: redis
+    container_name: cache
+    ports:
+      - "6379:6379"

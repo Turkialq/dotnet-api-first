@@ -4,11 +4,13 @@ using dotnet_api_first.Services.CharacterService;
 using Microsoft.AspNetCore.Mvc;
 using dotnet_api_first.DTOs.Character;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.RateLimiting;
 
 namespace dotnet_api_first.Controllers
 {
     [Authorize]
     [ApiController]
+    [EnableRateLimiting("FixedWindowPolicy")]
     [Route("api/[controller]")]
     public class CharacterController : ControllerBase
     {
@@ -66,8 +68,5 @@ namespace dotnet_api_first.Controllers
         }
 
     }
-
-
-
 
 }

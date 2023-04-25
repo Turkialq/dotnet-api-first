@@ -1,3 +1,4 @@
+using dotnet_api_first.Configurations.Filters;
 using dotnet_api_first.Data;
 using dotnet_api_first.Services.CharacterService;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -37,7 +38,7 @@ builder.Services.AddRateLimiter(options =>
         opt.QueueLimit = 15;
         opt.QueueProcessingOrder = System.Threading.RateLimiting.QueueProcessingOrder.OldestFirst;
 
-    });
+    }).RejectionStatusCode = 429; // --> too many request
 });
 builder.Services.AddDbContext<DataContex>(options => options.UseNpgsql(builder.Configuration.GetConnectionString("DbContext")));
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)

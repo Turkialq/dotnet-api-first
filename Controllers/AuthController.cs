@@ -2,11 +2,12 @@ using dotnet_api_first.Data;
 using dotnet_api_first.DTOs.user;
 using dotnet_api_first.models;
 using Microsoft.AspNetCore.Mvc;
-
+using Microsoft.AspNetCore.RateLimiting;
 
 namespace dotnet_api_first.Controllers
 {
     [ApiController]
+    [EnableRateLimiting("FixedWindowPolicy")]
     [Route("[controller]")]
     public class Auth : ControllerBase
     {
