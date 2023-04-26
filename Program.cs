@@ -40,7 +40,8 @@ builder.Services.AddRateLimiter(options =>
 
     }).RejectionStatusCode = 429; // --> too many request
 });
-builder.Services.AddDbContext<DataContex>(options => options.UseNpgsql(builder.Configuration.GetConnectionString("DbContext")));
+builder.Services.AddDbContext<DataContex>(options =>
+options.UseNpgsql(builder.Configuration.GetConnectionString("DbContext")));
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 .AddJwtBearer(options =>
 {
