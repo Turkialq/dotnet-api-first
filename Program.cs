@@ -1,5 +1,6 @@
 using dotnet_api_first.Configurations.Filters;
 using dotnet_api_first.Data;
+using dotnet_api_first.Services.Chache;
 using dotnet_api_first.Services.CharacterService;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.RateLimiting;
@@ -40,6 +41,7 @@ builder.Services.AddRateLimiter(options =>
 
     }).RejectionStatusCode = 429; // --> too many request
 });
+builder.Services.AddScoped<ICacheService, CacheService>();
 builder.Services.AddDbContext<DataContex>(options =>
 options.UseNpgsql(builder.Configuration.GetConnectionString("DbContext")));
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -54,6 +56,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         ValidateAudience = false
     };
 });
+builder.Services.AddHttpContextAccessor();
 
 var app = builder.Build();
 

@@ -25,9 +25,7 @@ namespace dotnet_api_first.Controllers
         [HttpGet("characters")]
         public async Task<ActionResult<ServiceRespinse<List<GetCharacterDTO>>>> GetListOfCharacters()
         {
-            // get the id of the user
-            int userID = int.Parse(User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)!.Value);
-            return Ok(await _characterService.GetCharacters(userID));
+            return Ok(await _characterService.GetCharacters());
         }
 
         [HttpGet("character/{id}")]

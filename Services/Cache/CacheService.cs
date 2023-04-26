@@ -1,13 +1,12 @@
-
 using System.Text.Json;
 using StackExchange.Redis;
 
 namespace dotnet_api_first.Services.Chache
 {
-    public class ChacheService : IChacheService
+    public class CacheService : ICacheService
     {
         private IDatabase _cacheDB;
-        public ChacheService()
+        public CacheService()
         {
             var redis = ConnectionMultiplexer.Connect("localhost:6379");
             _cacheDB = redis.GetDatabase();
