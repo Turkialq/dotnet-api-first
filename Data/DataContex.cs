@@ -11,6 +11,7 @@ namespace dotnet_api_first.Data
         }
         public DbSet<Character> characters { get; set; }
         public DbSet<User> users { get; set; }
+        public DbSet<Weapon> weapons { get; set; }
 
     }
 }

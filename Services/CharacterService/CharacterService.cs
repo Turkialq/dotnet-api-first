@@ -70,7 +70,8 @@ namespace dotnet_api_first.Services.CharacterService
         public async Task<ServiceRespinse<GetCharacterDTO>> UpdateCharacter(UpdateCharacterDTO newCharacter)
         {
             var serviceResponse = new ServiceRespinse<GetCharacterDTO>();
-            var updatedCharacter = await _context.characters.Where(u => u.user!.id == GetUserId()).FirstAsync(c => c.ID == newCharacter.ID);
+            var updatedCharacter = await _context.characters.Include(c => c.user)
+            .Where(u => u.user!.id == GetUserId()).FirstAsync(c => c.ID == newCharacter.ID);
 
             try
             {
@@ -109,7 +110,7 @@ namespace dotnet_api_first.Services.CharacterService
                 var result = id;
                 _context.characters.Remove(character);
                 await _context.SaveChangesAsync();
-                serviceResponse.Data = await _context.characters.Select(c => _mapper.Map<GetCharacterDTO>(c)).ToListAsync();
+                serviceResponse.Data = await _context.characters.Where(u => u.user!.id == GetUserId()).Select(c => _mapper.Map<GetCharacterDTO>(c)).ToListAsync();
                 serviceResponse.Message = "deleted Single character";
 
                 return serviceResponse;
