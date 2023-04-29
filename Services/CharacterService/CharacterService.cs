@@ -2,8 +2,10 @@ using System.Security.Claims;
 using AutoMapper;
 using dotnet_api_first.Data;
 using dotnet_api_first.DTOs.Character;
+using dotnet_api_first.Services.Chache;
 using dotnet_api_first.models;
 using Microsoft.EntityFrameworkCore;
+using System.Collections;
 
 namespace dotnet_api_first.Services.CharacterService
 {
@@ -12,11 +14,13 @@ namespace dotnet_api_first.Services.CharacterService
         private readonly IMapper _mapper;
         private readonly DataContex _context;
         private readonly IHttpContextAccessor _httpContextAccessor;
-        public CharacterService(IMapper mapper, DataContex context, IHttpContextAccessor httpContextAccessor)
+        private readonly ICacheService _cacheService;
+        public CharacterService(IMapper mapper, DataContex context, IHttpContextAccessor httpContextAccessor, ICacheService cacheService)
         {
             _mapper = mapper;
             _context = context;
             _httpContextAccessor = httpContextAccessor;
+            _cacheService = cacheService;
 
         }
 
@@ -43,9 +47,23 @@ namespace dotnet_api_first.Services.CharacterService
         public async Task<ServiceRespinse<List<GetCharacterDTO>>> GetCharacters()
         {
             var serviceResponse = new ServiceRespinse<List<GetCharacterDTO>>();
-            var dbCharacters = await _context.characters.Where(c => c.user!.id == GetUserId()).ToListAsync();
-            serviceResponse.Data = dbCharacters.Select(c => _mapper.Map<GetCharacterDTO>(c)).ToList();
-            serviceResponse.Message = "Get all characters";
+            // Get From Redis If Avalible
+            var cachedResult = _cacheService.GetData<IEnumerable<Character>>(GetUserId().ToString());
+            if (cachedResult is not null && cachedResult.Count() > 0)
+            {
+                serviceResponse.Data = cachedResult.Select(c => _mapper.Map<GetCharacterDTO>(c)).ToList();
+                serviceResponse.Message = "Get all characters from redis";
+
+            }
+            else
+            {
+                var dbCharacters = await _context.characters.Where(c => c.user!.id == GetUserId()).ToListAsync();
+                serviceResponse.Data = dbCharacters.Select(c => _mapper.Map<GetCharacterDTO>(c)).ToList();
+                serviceResponse.Message = "Get all characters";
+
+                var expiryTime = DateTimeOffset.Now.AddSeconds(30);
+                _cacheService.SetData<IEnumerable<Character>>(GetUserId().ToString(), dbCharacters, expiryTime);
+            }
 
             return serviceResponse;
         }

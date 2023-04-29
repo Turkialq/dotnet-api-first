@@ -10,7 +10,6 @@ namespace dotnet_api_first.Services.Chache
         {
             var redis = ConnectionMultiplexer.Connect("localhost:6379");
             _cacheDB = redis.GetDatabase();
-
         }
         public T GetData<T>(string key)
         {
@@ -21,6 +20,12 @@ namespace dotnet_api_first.Services.Chache
             return default!;
         }
 
+        public bool SetData<T>(string key, T value, DateTimeOffset expirationTime)
+        {
+            var expirTime = expirationTime.DateTime.Subtract(DateTime.Now);
+            return _cacheDB.StringSet(key, JsonSerializer.Serialize(value), expirTime);
+
+        }
         public object RemoveData(string key)
         {
             var _exit = _cacheDB.KeyExists(key);
@@ -28,14 +33,6 @@ namespace dotnet_api_first.Services.Chache
             if (_exit)
                 return _cacheDB.KeyDelete(key);
             return false;
-        }
-
-        public bool SetData<T>(string key, T value, DateTimeOffset expirationTime)
-        {
-
-            var expirTime = expirationTime.DateTime.Subtract(DateTime.Now);
-            return _cacheDB.StringSet(key, JsonSerializer.Serialize(value), expirTime);
-
         }
     }
 }
