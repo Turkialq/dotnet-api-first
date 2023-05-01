@@ -53,7 +53,6 @@ namespace dotnet_api_first.Services.CharacterService
             {
                 serviceResponse.Data = cachedResult.Select(c => _mapper.Map<GetCharacterDTO>(c)).ToList();
                 serviceResponse.Message = "Get all characters from redis";
-
             }
             else
             {

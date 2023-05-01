@@ -2,6 +2,8 @@ using dotnet_api_first.Configurations.Filters;
 using dotnet_api_first.Data;
 using dotnet_api_first.Services.Chache;
 using dotnet_api_first.Services.CharacterService;
+using Hangfire;
+using Hangfire.PostgreSql;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.EntityFrameworkCore;
@@ -16,6 +18,10 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddHangfire(config =>
+config.UseSimpleAssemblyNameTypeSerializer()
+.UseRecommendedSerializerSettings()
+.UsePostgreSqlStorage(builder.Configuration.GetConnectionString("DbContext")));
 builder.Services.AddSwaggerGen(c =>
 {
     c.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme
@@ -68,6 +74,10 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseRateLimiter();
+
+app.UseHangfireDashboard();
+
+app.MapHangfireDashboard();
 
 app.UseHttpsRedirection();
 
