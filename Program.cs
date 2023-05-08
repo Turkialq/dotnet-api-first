@@ -1,5 +1,6 @@
 using dotnet_api_first.Configurations.Filters;
 using dotnet_api_first.Data;
+using dotnet_api_first.Services.BackgroundJobs;
 using dotnet_api_first.Services.Chache;
 using dotnet_api_first.Services.CharacterService;
 using Hangfire;
@@ -22,6 +23,7 @@ builder.Services.AddHangfire(config =>
 config.UseSimpleAssemblyNameTypeSerializer()
 .UseRecommendedSerializerSettings()
 .UsePostgreSqlStorage(builder.Configuration.GetConnectionString("DbContext")));
+builder.Services.AddHangfireServer();
 builder.Services.AddSwaggerGen(c =>
 {
     c.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme
@@ -36,6 +38,7 @@ builder.Services.AddSwaggerGen(c =>
 builder.Services.AddAutoMapper(typeof(Program).Assembly);
 builder.Services.AddScoped<ICharacterService, CharacterService>();
 builder.Services.AddScoped<IAuthRepo, AuthRepo>();
+builder.Services.AddTransient<IBackground, Background>();
 builder.Services.AddRateLimiter(options =>
 {
     options.AddFixedWindowLimiter("FixedWindowPolicy", opt =>
@@ -86,5 +89,7 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+
+RecurringJob.AddOrUpdate<IBackground>(x => x.UpdateDatabase(), Cron.Minutely); // --> update database every day
 
 app.Run();

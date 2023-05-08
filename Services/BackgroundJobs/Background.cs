@@ -9,12 +9,12 @@ namespace dotnet_api_first.Services.BackgroundJobs
     {
         public void SyncData()
         {
-            throw new NotImplementedException();
+            Console.WriteLine("Testing HangFire: SynData");
         }
 
         public void UpdateDatabase()
         {
-            throw new NotImplementedException();
+            Console.WriteLine("Testing HangFire: UpdateDatabase");
         }
     }
 }
