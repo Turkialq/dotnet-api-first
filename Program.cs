@@ -90,6 +90,6 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-RecurringJob.AddOrUpdate<IBackground>(x => x.UpdateDatabase(), Cron.Minutely); // --> update database every day
+RecurringJob.AddOrUpdate<IBackground>(x => x.BackUpDatabase(), Cron.Minutely); // --> update database every day
 
 app.Run();

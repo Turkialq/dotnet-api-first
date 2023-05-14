@@ -1,47 +1,26 @@
-BACKUPDIR=/home/xcad/backup
+#!/bin/bash
 
+# Get the container ID of the PostgreSQL container
+CONTAINER_ID=$(docker ps -q --filter "name=postgres")
 
-# backup all mysql/mariadb containers
-# backup all mysql/mariadb containers and all databases
+# Get the current date and time
+DATE=$(date +"%Y-%m-%d_%H-%M-%S")
 
-CONTAINER=$(docker ps --format '{{.Names}}:{{.Image}}' | grep 'mysql\|mariadb' | cut -d":" -f1)
+# Create a backup directory
+BACKUP_DIR="Services/BackgroundJobs/DataBaseBackup/Backups"
+mkdir -p $BACKUP_DIR
 
-@@ -21,19 +21,35 @@ if [ ! -d $BACKUPDIR ]; then
-fi
+# Create a backup file
+BACKUP_FILE="$BACKUP_DIR/postgres_backup_$DATE.sql"
 
-for i in $CONTAINER; do
-    MYSQL_DATABASE=$(docker exec $i env | grep MYSQL_DATABASE |cut -d"=" -f2)
+# Backup the database
+docker exec -it $CONTAINER_ID pg_dumpall > $BACKUP_FILE
 
-    MYSQL_PWD=$(docker exec $i env | grep MYSQL_ROOT_PASSWORD |cut -d"=" -f2)
+# Compress the backup file
+gzip $BACKUP_FILE
 
-    docker exec -e MYSQL_DATABASE=$MYSQL_DATABASE -e MYSQL_PWD=$MYSQL_PWD \
-        $i /usr/bin/mysqldump -u root $MYSQL_DATABASE \
-        | gzip > $BACKUPDIR/$i-$MYSQL_DATABASE-$(date +"%Y%m%d%H%M").sql.gz
-    docker exec -e MYSQL_PWD=$MYSQL_PWD $i /usr/bin/mysqldump \
-        --all-databases --ignore-database=mysql -u root \
-        | gzip > $BACKUPDIR/$i-$(date +"%Y%m%d%H%M").sql.gz
+# Rename the compressed backup file
+mv $BACKUP_FILE.gz $BACKUP_DIR
 
-    OLD_BACKUPS=$(ls -1 $BACKUPDIR/$i*.gz |wc -l)
-    if [ $OLD_BACKUPS -gt $DAYS ]; then
-        find $BACKUPDIR -name "$i*.gz" -daystart -mtime +$DAYS -delete
-    fi
-done
-
-# backup all postgres containers and all databases
-
-POSTGRES_CONTAINER=$(docker ps --format '{{.Names}}:{{.Image}}' | grep 'postgres' | cut -d":" -f1)
-
-for i in $CONTAINER; do
-
-    POSTGRES_USER=$(docker exec $i env | grep POSTGRES_USER |cut -d"=" -f2)
-
-    docker exec -t $i pg_dumpall --exclude-database=template1 \
-    -c -U $POSTGRES_USER | gzip > $BACKUPDIR/$i-$(date +"%Y%m%d%H%M").sql.gz
-
-    OLD_POSTGRES_BACKUPS=$(ls -1 $BACKUPDIR/$i*.gz |wc -l)
-    if [ $OLD_POSTGRES_BACKUPS -gt $DAYS ]; then
-        	find $BACKUPDIR -name "$i*.gz" -daystart -mtime +$DAYS -delete
-    fi
-done
-
-# bitwarden backup
+# Print a success message
+echo "PostgreSQL database backed up successfully to $PWD/$BACKUP_DIR."
